@@ -89,12 +89,12 @@ const generateFullGrid = () => {
          { value: 8, iseditable: false },
          { value: 0, isEditable: true },
          { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
          { value: 6, isEditable: false },
          { value: 0, isEditable: true },
          { value: 0, isEditable: true },
          { value: 0, isEditable: true },
          { value: 3, isEditable: false },
+         { value: 0, isEditable: true },
       ],
       [
          { value: 4, isEditable: false },
@@ -104,8 +104,8 @@ const generateFullGrid = () => {
          { value: 0, isEditable: true },
          { value: 3, isEditable: false },
          { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
          { value: 1, isEditable: false },
+         { value: 0, isEditable: true },
       ],
       [
          { value: 7, isEditable: false },
@@ -164,23 +164,18 @@ const styles = StyleSheet.create({
       flexDirection: "row",
    },
    cell: {
-      width: 50,
-      height: 50,
       borderWidth: 1,
-      borderColor: "#000",
-      justifyContent: "center",
+      width: 40,
+      height: 40,
       alignItems: "center",
-   },
-   cell: {
-      backgroundColor: "#fff",
+      justifyContent: "center",
    },
    cellText: {
-      textAlign: "center",
-      fontSize: 20,
+      fontSize: 24,
    },
 });
 
-export default function App() {
+const App = () => {
    const [grid, setGrid] = useState(generateFullGrid());
 
    const onCellPress = (rowIndex, cellIndex, value) => {
@@ -190,8 +185,10 @@ export default function App() {
    };
 
    return (
-      <View style={{ flex: 1, padding: 20 }}>
+      <View style={styles.container}>
          <Grid grid={grid} onCellPress={onCellPress} />
       </View>
    );
-}
+};
+
+export default App;
