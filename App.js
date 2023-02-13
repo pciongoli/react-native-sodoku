@@ -5,6 +5,8 @@ import {
    StyleSheet,
    TouchableOpacity,
    TextInput,
+   TouchableWithoutFeedback,
+   Keyboard,
 } from "react-native";
 
 const Cell = ({ value, onPress, isEditable }) => {
@@ -200,21 +202,112 @@ const onCellPress = (row, col, value) => {
    setGrid(newGrid);
 };
 
+const SubmitButton = ({ onPress }) => (
+   <TouchableOpacity onPress={onPress} style={styles.submitButton}>
+      <Text style={styles.submitButtonText}>Submit</Text>
+   </TouchableOpacity>
+);
+const Sudoku = () => {
+   const [grid, setGrid] = useState(generateFullGrid());
+   const [elapsedTime, setElapsedTime] = useState(0);
+   const [isRunning, setIsRunning] = useState(true);
+   const [intervalId, setIntervalId] = useState(null);
+
+   useEffect(() => {
+      if (isRunning) {
+         setIntervalId(
+            setInterval(() => {
+               setElapsedTime((prevTime) => prevTime + 1);
+            }, 1000)
+         );
+      }
+
+      return () => {
+         clearInterval(intervalId);
+      };
+   }, [isRunning]);
+
+   const handleSubmit = () => {
+      setIsRunning(true);
+      const solutionGrid = [
+         [5, 3, 4, 6, 7, 8, 9, 1, 2],
+         [6, 7, 2, 1, 9, 5, 3, 4, 8],
+         [1, 9, 8, 3, 4, 2, 5, 6, 7],
+         [8, 5, 9, 7, 6, 1, 4, 2, 3],
+         [4, 2, 6, 8, 5, 3, 7, 9, 1],
+         [7, 1, 3, 9, 2, 4, 8, 5, 6],
+         [9, 6, 1, 5, 3, 7, 2, 8, 4],
+         [2, 8, 7, 4, 1, 9, 6, 3, 5],
+         [3, 4, 5, 2, 8, 6, 1, 7, 9],
+      ];
+      for (let i = 0; i < 9; i++) {
+         for (let j = 0; j < 9; j++) {
+            if (grid[i][j].value !== solutionGrid[i][j]) {
+               console.log("Incorrect. Please try again!");
+               return (
+                  <View style={styles.messageContainer}>
+                     <Text style={styles.messageText}>
+                        Incorrect. Please try again!
+                     </Text>
+                  </View>
+               );
+            }
+         }
+      }
+      console.log("Solution submitted!");
+      setIsRunning(false);
+      setElapsedTime(0);
+   };
+   const handleBlur = () => {
+      Keyboard.dismiss();
+   };
+   return (
+      <TouchableWithoutFeedback onPress={handleBlur}>
+         <View style={styles.container}>
+            <View style={styles.titleAndTimerContainer}>
+               <Text style={styles.titleText}>Sudoku</Text>
+               <View style={styles.timerContainer}>
+                  <Text style={styles.timerText}>{elapsedTime}</Text>
+               </View>
+            </View>
+            <Grid
+               grid={grid}
+               validateInput={validateInput}
+               onCellPress={(row, col, value) => {
+                  const newGrid = [...grid];
+                  newGrid[row][col].value = value;
+                  setGrid(newGrid);
+               }}
+            />
+            <SubmitButton onPress={handleSubmit} />
+         </View>
+      </TouchableWithoutFeedback>
+   );
+};
+
 const styles = StyleSheet.create({
    container: {
       flex: 1,
+      backgroundColor: "white",
       alignItems: "center",
       justifyContent: "center",
    },
    titleAndTimerContainer: {
+      width: "100%",
+      height: 50,
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "center",
    },
    timerContainer: {
-      position: "relative",
-      top: 0,
-      left: 0,
-      padding: 10,
+      width: 100,
+      height: 50,
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: 10,
+   },
+   timerText: {
+      fontSize: 18,
    },
    titleText: {
       fontSize: 30,
@@ -251,6 +344,11 @@ const styles = StyleSheet.create({
    },
    messageContainer: {
       position: "absolute",
+      width: 100,
+      height: 50,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 20,
       top: 0,
       left: 0,
       right: 0,
@@ -264,73 +362,5 @@ const styles = StyleSheet.create({
       fontSize: 16,
    },
 });
-
-const SubmitButton = ({ onPress }) => (
-   <TouchableOpacity onPress={onPress} style={styles.submitButton}>
-      <Text style={styles.submitButtonText}>Submit</Text>
-   </TouchableOpacity>
-);
-
-const Sudoku = () => {
-   const [grid, setGrid] = useState(generateFullGrid());
-   const [elapsedTime, setElapsedTime] = useState(0);
-
-   useEffect(() => {
-      const intervalId = setInterval(() => {
-         setElapsedTime((prevTime) => prevTime + 1);
-      }, 1000);
-      return () => clearInterval(intervalId);
-   }, []);
-
-   const handleSubmit = () => {
-      const solutionGrid = [
-         [5, 3, 4, 6, 7, 8, 9, 1, 2],
-         [6, 7, 2, 1, 9, 5, 3, 4, 8],
-         [1, 9, 8, 3, 4, 2, 5, 6, 7],
-         [8, 5, 9, 7, 6, 1, 4, 2, 3],
-         [4, 2, 6, 8, 5, 3, 7, 9, 1],
-         [7, 1, 3, 9, 2, 4, 8, 5, 6],
-         [9, 6, 1, 5, 3, 7, 2, 8, 4],
-         [2, 8, 7, 4, 1, 9, 6, 3, 5],
-         [3, 4, 5, 2, 8, 6, 1, 7, 9],
-      ];
-      for (let i = 0; i < 9; i++) {
-         for (let j = 0; j < 9; j++) {
-            if (grid[i][j].value !== solutionGrid[i][j]) {
-               console.log("Incorrect solution. Please try again.");
-               return (
-                  <View style={styles.messageContainer}>
-                     <Text style={styles.messageText}>
-                        Incorrect. Please try again!
-                     </Text>
-                  </View>
-               );
-            }
-         }
-      }
-      console.log("Solution submitted!");
-   };
-
-   return (
-      <View style={styles.container}>
-         <View style={styles.titleAndTimerContainer}>
-            <Text style={styles.titleText}>Sudoku</Text>
-            <View style={styles.timerContainer}>
-               <Text style={styles.timerText}>{elapsedTime}</Text>
-            </View>
-         </View>
-         <Grid
-            grid={grid}
-            validateInput={validateInput}
-            onCellPress={(row, col, value) => {
-               const newGrid = [...grid];
-               newGrid[row][col].value = value;
-               setGrid(newGrid);
-            }}
-         />
-         <SubmitButton onPress={handleSubmit} />
-      </View>
-   );
-};
 
 export default Sudoku;
