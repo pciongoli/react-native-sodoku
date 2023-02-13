@@ -16,8 +16,13 @@ const Cell = ({ value, onPress, isEditable }) => {
                style={styles.cellText}
                value={inputValue}
                onChangeText={(text) => {
-                  setInputValue(text);
-                  onPress(text);
+                  if (
+                     text === "" ||
+                     (parseInt(text) >= 1 && parseInt(text) <= 9)
+                  ) {
+                     setInputValue(text);
+                     onPress(text);
+                  }
                }}
                keyboardType="number-pad"
                maxLength={1}
@@ -29,7 +34,7 @@ const Cell = ({ value, onPress, isEditable }) => {
    );
 };
 
-const Grid = ({ grid, onCellPress }) => {
+const Grid = ({ grid, onCellPress, validateInput }) => {
    return (
       <View style={styles.grid}>
          {grid.map((row, rowIndex) => (
@@ -39,9 +44,13 @@ const Grid = ({ grid, onCellPress }) => {
                      key={cellIndex}
                      value={cell.value}
                      isEditable={cell.isEditable}
-                     onPress={(text) =>
-                        onCellPress(rowIndex, cellIndex, parseInt(text))
-                     }
+                     onPress={(text) => {
+                        if (
+                           validateInput(rowIndex, cellIndex, parseInt(text))
+                        ) {
+                           onCellPress(rowIndex, cellIndex, parseInt(text));
+                        }
+                     }}
                   />
                ))}
             </View>
@@ -154,41 +163,45 @@ const generateFullGrid = () => {
    ];
 };
 
+const validateInput = (row, col, value) => {
+   // implementation for checking if the input is valid or not
+   return true;
+};
+
+const onCellPress = (row, col, value) => {
+   // implementation for updating the grid
+};
+
 const styles = StyleSheet.create({
    grid: {
       flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
    },
    row: {
       flexDirection: "row",
    },
    cell: {
       borderWidth: 1,
-      width: 40,
-      height: 40,
+      width: 50,
+      height: 50,
       alignItems: "center",
       justifyContent: "center",
    },
    cellText: {
-      fontSize: 24,
+      fontSize: 20,
    },
 });
 
-const App = () => {
+const Sudoku = () => {
    const [grid, setGrid] = useState(generateFullGrid());
-
-   const onCellPress = (rowIndex, cellIndex, value) => {
-      const newGrid = [...grid];
-      newGrid[rowIndex][cellIndex].value = value;
-      setGrid(newGrid);
-   };
-
    return (
       <View style={styles.container}>
-         <Grid grid={grid} onCellPress={onCellPress} />
+         <Grid
+            grid={grid}
+            validateInput={validateInput}
+            onCellPress={onCellPress}
+         />
       </View>
    );
 };
 
-export default App;
+export default Sudoku;
