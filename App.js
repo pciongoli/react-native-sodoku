@@ -164,16 +164,56 @@ const generateFullGrid = () => {
 };
 
 const validateInput = (row, col, value) => {
-   // implementation for checking if the input is valid or not
+   const grid = generateFullGrid();
+   // check if the input is within the range of 1 to 9
+   if (value < 1 || value > 9) {
+      return false;
+   }
+   // check if the input is not in the same row
+   for (let i = 0; i < 9; i++) {
+      if (grid[row][i].value === value) {
+         return false;
+      }
+   }
+   // check if the input is not in the same column
+   for (let i = 0; i < 9; i++) {
+      if (grid[i][col].value === value) {
+         return false;
+      }
+   }
+   // check if the input is not in the same 3x3 sub-grid
+   const subGridRowStart = Math.floor(row / 3) * 3;
+   const subGridColStart = Math.floor(col / 3) * 3;
+   for (let i = subGridRowStart; i < subGridRowStart + 3; i++) {
+      for (let j = subGridColStart; j < subGridColStart + 3; j++) {
+         if (grid[i][j].value === value) {
+            return false;
+         }
+      }
+   }
    return true;
 };
 
 const onCellPress = (row, col, value) => {
-   // implementation for updating the grid
+   const newGrid = [...generateFullGrid()];
+   newGrid[row][col].value = value;
+   setGrid(newGrid);
 };
 
 const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+   },
+   titleText: {
+      fontSize: 30,
+      fontWeight: "bold",
+      marginBottom: 20,
+   },
    grid: {
+      width: 300,
+      height: 300,
       flexDirection: "column",
    },
    row: {
@@ -181,25 +221,91 @@ const styles = StyleSheet.create({
    },
    cell: {
       borderWidth: 1,
-      width: 50,
-      height: 50,
+      width: 30,
+      height: 30,
       alignItems: "center",
       justifyContent: "center",
    },
    cellText: {
-      fontSize: 20,
+      fontSize: 16,
+   },
+   submitButton: {
+      backgroundColor: "blue",
+      padding: 10,
+      marginTop: 10,
+      alignSelf: "center",
+   },
+   submitButtonText: {
+      color: "white",
+      fontWeight: "bold",
+   },
+   messageContainer: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgba(0,0,0,0.5)",
+   },
+   messageText: {
+      color: "white",
+      fontSize: 16,
    },
 });
 
+const SubmitButton = ({ onPress }) => (
+   <TouchableOpacity onPress={onPress} style={styles.submitButton}>
+      <Text style={styles.submitButtonText}>Submit</Text>
+   </TouchableOpacity>
+);
+
 const Sudoku = () => {
    const [grid, setGrid] = useState(generateFullGrid());
+
+   const handleSubmit = () => {
+      const solutionGrid = [
+         [5, 3, 4, 6, 7, 8, 9, 1, 2],
+         [6, 7, 2, 1, 9, 5, 3, 4, 8],
+         [1, 9, 8, 3, 4, 2, 5, 6, 7],
+         [8, 5, 9, 7, 6, 1, 4, 2, 3],
+         [4, 2, 6, 8, 5, 3, 7, 9, 1],
+         [7, 1, 3, 9, 2, 4, 8, 5, 6],
+         [9, 6, 1, 5, 3, 7, 2, 8, 4],
+         [2, 8, 7, 4, 1, 9, 6, 3, 5],
+         [3, 4, 5, 2, 8, 6, 1, 7, 9],
+      ];
+      for (let i = 0; i < 9; i++) {
+         for (let j = 0; j < 9; j++) {
+            if (grid[i][j].value !== solutionGrid[i][j]) {
+               console.log("Incorrect solution. Please try again.");
+               return (
+                  <View style={styles.messageContainer}>
+                     <Text style={styles.messageText}>
+                        Incorrect. Please try again!
+                     </Text>
+                  </View>
+               );
+            }
+         }
+      }
+      console.log("Solution submitted!");
+   };
+
    return (
       <View style={styles.container}>
+         <Text style={styles.titleText}>Sudoku</Text>
          <Grid
             grid={grid}
             validateInput={validateInput}
-            onCellPress={onCellPress}
+            onCellPress={(row, col, value) => {
+               const newGrid = [...grid];
+               newGrid[row][col].value = value;
+               setGrid(newGrid);
+            }}
          />
+         <SubmitButton onPress={handleSubmit} />
       </View>
    );
 };
