@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
    View,
    Text,
@@ -206,6 +206,16 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
    },
+   titleAndTimerContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+   },
+   timerContainer: {
+      position: "relative",
+      top: 0,
+      left: 0,
+      padding: 10,
+   },
    titleText: {
       fontSize: 30,
       fontWeight: "bold",
@@ -263,6 +273,14 @@ const SubmitButton = ({ onPress }) => (
 
 const Sudoku = () => {
    const [grid, setGrid] = useState(generateFullGrid());
+   const [elapsedTime, setElapsedTime] = useState(0);
+
+   useEffect(() => {
+      const intervalId = setInterval(() => {
+         setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+      return () => clearInterval(intervalId);
+   }, []);
 
    const handleSubmit = () => {
       const solutionGrid = [
@@ -295,7 +313,12 @@ const Sudoku = () => {
 
    return (
       <View style={styles.container}>
-         <Text style={styles.titleText}>Sudoku</Text>
+         <View style={styles.titleAndTimerContainer}>
+            <Text style={styles.titleText}>Sudoku</Text>
+            <View style={styles.timerContainer}>
+               <Text style={styles.timerText}>{elapsedTime}</Text>
+            </View>
+         </View>
          <Grid
             grid={grid}
             validateInput={validateInput}
