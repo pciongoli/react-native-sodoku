@@ -10,10 +10,15 @@ import {
    Button,
 } from "react-native";
 
-const Cell = ({ value, onPress, isEditable }) => {
-   const [inputValue, setInputValue] = useState(value.toString());
+const Cell = ({ value, onPress, isEditable, rowIndex, cellIndex }) => {
+   const [inputValue, setInputValue] = useState(value ? value.toString() : "");
    return (
-      <View style={styles.cell}>
+      <View
+         style={[
+            styles.cell,
+            (rowIndex + cellIndex) % 3 === 0 ? styles.thickerBorder : null,
+         ]}
+      >
          {isEditable ? (
             <TextInput
                style={styles.cellText}
@@ -54,6 +59,8 @@ const Grid = ({ grid, onCellPress, validateInput }) => {
                            onCellPress(rowIndex, cellIndex, parseInt(text));
                         }
                      }}
+                     rowIndex={rowIndex}
+                     cellIndex={cellIndex}
                   />
                ))}
             </View>
@@ -65,103 +72,55 @@ const Grid = ({ grid, onCellPress, validateInput }) => {
 const generateFullGrid = () => {
    return [
       [
-         { value: 5, isEditable: false },
-         { value: 3, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 7, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
+         [
+            { value: 5, isEditable: false },
+            { value: 3, isEditable: false },
+            { value: 0, isEditable: true },
+         ],
+         [
+            { value: 0, isEditable: true },
+            { value: 7, isEditable: false },
+            { value: 0, isEditable: true },
+         ],
+         [
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+         ],
       ],
       [
-         { value: 6, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 1, isEditable: false },
-         { value: 9, isEditable: false },
-         { value: 5, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
+         [
+            { value: 6, isEditable: false },
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+         ],
+         [
+            { value: 1, isEditable: false },
+            { value: 9, isEditable: false },
+            { value: 5, isEditable: false },
+         ],
+         [
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+         ],
       ],
       [
-         { value: 0, isEditable: true },
-         { value: 9, isEditable: false },
-         { value: 8, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 6, isEditable: false },
-         { value: 0, isEditable: true },
-      ],
-      [
-         { value: 8, iseditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 6, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 3, isEditable: false },
-         { value: 0, isEditable: true },
-      ],
-      [
-         { value: 4, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 8, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 3, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 1, isEditable: false },
-         { value: 0, isEditable: true },
-      ],
-      [
-         { value: 7, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 2, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 6, isEditable: false },
-      ],
-      [
-         { value: 0, isEditable: true },
-         { value: 6, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 2, isEditable: false },
-         { value: 8, isEditable: false },
-         { value: 0, isEditable: true },
-      ],
-      [
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 4, isEditable: false },
-         { value: 1, isEditable: false },
-         { value: 9, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 5, isEditable: false },
-      ],
-      [
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 8, isEditable: false },
-         { value: 0, isEditable: true },
-         { value: 0, isEditable: true },
-         { value: 7, isEditable: false },
-         { value: 9, isEditable: false },
+         [
+            { value: 0, isEditable: true },
+            { value: 9, isEditable: false },
+            { value: 8, isEditable: false },
+         ],
+         [
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+            { value: 0, isEditable: true },
+         ],
+         [
+            { value: 0, isEditable: true },
+            { value: 6, isEditable: false },
+            { value: 0, isEditable: true },
+         ],
       ],
    ];
 };
@@ -184,6 +143,7 @@ const validateInput = (row, col, value) => {
          return false;
       }
    }
+
    // check if the input is not in the same 3x3 sub-grid
    const subGridRowStart = Math.floor(row / 3) * 3;
    const subGridColStart = Math.floor(col / 3) * 3;
@@ -221,6 +181,12 @@ const Sudoku = () => {
    const [isRunning, setIsRunning] = useState(true);
    const [intervalId, setIntervalId] = useState(null);
    const [showMessage, setShowMessage] = useState(false);
+
+   const onCellPress = (rowIndex, cellIndex, value) => {
+      const newGrid = [...grid];
+      newGrid[rowIndex][cellIndex].value = value;
+      setGrid(newGrid);
+   };
 
    useEffect(() => {
       if (isRunning) {
@@ -284,13 +250,10 @@ const Sudoku = () => {
             </View>
             <Grid
                grid={grid}
+               onCellPress={onCellPress}
                validateInput={validateInput}
-               onCellPress={(row, col, value) => {
-                  const newGrid = [...grid];
-                  newGrid[row][col].value = value;
-                  setGrid(newGrid);
-               }}
             />
+
             <View style={styles.buttonContainer}>
                <Button title="Submit" onPress={handleSubmit} />
                <Button title="Reset" onPress={handleReset} />
@@ -310,7 +273,7 @@ const Sudoku = () => {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: "white",
+      backgroundColor: "f2f2f2",
       alignItems: "center",
       justifyContent: "center",
    },
@@ -345,39 +308,53 @@ const styles = StyleSheet.create({
       flexDirection: "row",
    },
    cell: {
-      borderWidth: 1,
       width: 30,
       height: 30,
       alignItems: "center",
       justifyContent: "center",
+      backgroundColor: "white",
+      padding: 5,
+      borderWidth: 1,
+      borderColor: "gray",
+   },
+   thickerBorder: {
+      borderLeftWidth: 2,
+      borderTopWidth: 2,
    },
    cellText: {
-      fontSize: 16,
+      fontSize: 20,
+      fontFamily: "sans-serif-medium",
    },
    submitButton: {
       backgroundColor: "blue",
       padding: 10,
-      marginTop: 10,
-      alignSelf: "center",
+      borderRadius: 5,
+      marginTop: 20,
    },
    submitButtonText: {
       color: "white",
-      fontWeight: "bold",
+      fontSize: 20,
+   },
+   resetButton: {
+      backgroundColor: "red",
+      padding: 10,
+      borderRadius: 5,
+      marginTop: 20,
+   },
+   resetButtonText: {
+      color: "white",
+      fontSize: 20,
    },
    messageContainer: {
-      position: "absolute",
-      width: 100,
+      width: "100%",
       height: 50,
       alignItems: "center",
       justifyContent: "center",
       marginTop: 20,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "blue",
    },
    messageText: {
-      color: "white",
-      fontSize: 16,
+      fontSize: 20,
+      color: "red",
    },
 });
 
