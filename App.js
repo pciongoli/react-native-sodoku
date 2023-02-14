@@ -227,6 +227,8 @@ const Sudoku = () => {
       };
    }, [isRunning]);
 
+   const [showMessage, setShowMessage] = useState(false);
+
    const handleSubmit = () => {
       setIsRunning(true);
       const solutionGrid = [
@@ -243,24 +245,18 @@ const Sudoku = () => {
       for (let i = 0; i < 9; i++) {
          for (let j = 0; j < 9; j++) {
             if (grid[i][j].value !== solutionGrid[i][j]) {
-               console.log("Incorrect. Please try again!");
-               return (
-                  <View style={styles.messageContainer}>
-                     <Text style={styles.messageText}>
-                        Incorrect. Please try again!
-                     </Text>
-                  </View>
-               );
+               setShowMessage(true);
+               return;
             }
          }
       }
-      console.log("Solution submitted!");
       setIsRunning(false);
       setElapsedTime(0);
    };
    const handleBlur = () => {
       Keyboard.dismiss();
    };
+
    return (
       <TouchableWithoutFeedback onPress={handleBlur}>
          <View style={styles.container}>
@@ -280,6 +276,13 @@ const Sudoku = () => {
                }}
             />
             <SubmitButton onPress={handleSubmit} />
+            {showMessage && (
+               <View style={styles.messageContainer}>
+                  <Text style={styles.messageText}>
+                     Incorrect. Please try again!
+                  </Text>
+               </View>
+            )}
          </View>
       </TouchableWithoutFeedback>
    );
@@ -349,13 +352,9 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       marginTop: 20,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "rgba(0,0,0,0.5)",
+      backgroundColor: "blue",
    },
    messageText: {
       color: "white",
