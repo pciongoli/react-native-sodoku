@@ -10,7 +10,13 @@ import {
    Button,
 } from "react-native";
 
+<<<<<<< HEAD
 const Cell = ({ value, onPress, isEditable, rowIndex, cellIndex }) => {
+=======
+// `useState` hook to keep track of the value of the TextInput element
+// receives three props: `value`, `onPress`, and `isEditable`
+const Cell = ({ value, onPress, isEditable }) => {
+>>>>>>> main
    const [inputValue, setInputValue] = useState(value ? value.toString() : "");
    return (
       <View
@@ -42,12 +48,15 @@ const Cell = ({ value, onPress, isEditable, rowIndex, cellIndex }) => {
    );
 };
 
+// Generate full 9x9 grid
 const Grid = ({ grid, onCellPress, validateInput }) => {
+   const [fullGrid, solutionGrid] = generateFullGrid();
    return (
       <View style={styles.grid}>
          {grid.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
                {row.map((cell, cellIndex) => (
+                  // display cell value
                   <Cell
                      key={cellIndex}
                      value={cell.value}
@@ -69,7 +78,18 @@ const Grid = ({ grid, onCellPress, validateInput }) => {
    );
 };
 
+// take in an array as an argument and return the array with elements randomly shuffled
+const shuffle = (arr) => {
+   for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+   }
+   return arr;
+};
+
+// Replaced hardcoded puzzle with backtracking algorithm to generate random, valid Sudoku grid
 const generateFullGrid = () => {
+<<<<<<< HEAD
    return [
       [
          [
@@ -123,10 +143,75 @@ const generateFullGrid = () => {
          ],
       ],
    ];
+=======
+   const grid = [];
+   const solutionGrid = []; // added variable to store the solution grid
+   for (let i = 0; i < 9; i++) {
+      grid[i] = [];
+      solutionGrid[i] = []; // added a row to the solution grid
+      for (let j = 0; j < 9; j++) {
+         grid[i][j] = { value: "", isEditable: true };
+         solutionGrid[i][j] = 0; // initialized each cell to 0
+      }
+   }
+
+   // Check if the number num is a valid input for the cell at position row, col in a grid
+
+   const isValid = (row, col, num) => {
+      for (let i = 0; i < 9; i++) {
+         if (grid[row][i].value === num || grid[i][col].value === num) {
+            return false;
+         }
+      }
+
+      const subGridRowStart = Math.floor(row / 3) * 3;
+      const subGridColStart = Math.floor(col / 3) * 3;
+      for (let i = subGridRowStart; i < subGridRowStart + 3; i++) {
+         for (let j = subGridColStart; j < subGridColStart + 3; j++) {
+            if (grid[i][j].value === num) {
+               return false;
+            }
+         }
+      }
+
+      return [grid, solutionGrid];
+   };
+
+   // solves a sudoku puzzle represented by a 9x9 grid through use of backtracking
+   const solve = () => {
+      for (let row = 0; row < 9; row++) {
+         for (let col = 0; col < 9; col++) {
+            if (grid[row][col].value === "") {
+               shuffle([...Array(9).keys()])
+                  .map((num) => num + 1)
+                  .forEach((num) => {
+                     if (isValid(row, col, num)) {
+                        grid[row][col].value = num;
+                        solutionGrid[row][col] = num; // added line to update solution grid
+                        if (solve()) {
+                           return true;
+                        } else {
+                           grid[row][col].value = "";
+                           solutionGrid[row][col] = 0; // reset value in solution grid as well
+                        }
+                     }
+                  });
+               return false;
+            }
+         }
+      }
+
+      return true;
+   };
+
+   solve();
+   // console.log(solutionGrid); // console log the grid variable
+   return [grid, solutionGrid]; //return both grids
+>>>>>>> main
 };
 
 const validateInput = (row, col, value) => {
-   const grid = generateFullGrid();
+   const [grid, solutionGrid] = generateFullGrid();
    // check if the input is within the range of 1 to 9
    if (value < 1 || value > 9) {
       return false;
@@ -176,11 +261,14 @@ const ResetButton = ({ onPress }) => (
 );
 
 const Sudoku = () => {
-   const [grid, setGrid] = useState(generateFullGrid());
+   const [initialGrid, initialSolutionGrid] = generateFullGrid();
+   const [grid, setGrid] = useState(initialGrid);
+   const [solutionGrid, setSolutionGrid] = useState(initialSolutionGrid);
    const [elapsedTime, setElapsedTime] = useState(0);
    const [isRunning, setIsRunning] = useState(true);
    const [intervalId, setIntervalId] = useState(null);
    const [showMessage, setShowMessage] = useState(false);
+   const [isComplete, setIsComplete] = useState(false);
 
    const onCellPress = (rowIndex, cellIndex, value) => {
       const newGrid = [...grid];
@@ -204,35 +292,35 @@ const Sudoku = () => {
 
    const handleSubmit = () => {
       setIsRunning(true);
-      const solutionGrid = [
-         [5, 3, 4, 6, 7, 8, 9, 1, 2],
-         [6, 7, 2, 1, 9, 5, 3, 4, 8],
-         [1, 9, 8, 3, 4, 2, 5, 6, 7],
-         [8, 5, 9, 7, 6, 1, 4, 2, 3],
-         [4, 2, 6, 8, 5, 3, 7, 9, 1],
-         [7, 1, 3, 9, 2, 4, 8, 5, 6],
-         [9, 6, 1, 5, 3, 7, 2, 8, 4],
-         [2, 8, 7, 4, 1, 9, 6, 3, 5],
-         [3, 4, 5, 2, 8, 6, 1, 7, 9],
-      ];
       for (let i = 0; i < 9; i++) {
          for (let j = 0; j < 9; j++) {
             if (grid[i][j].value !== solutionGrid[i][j]) {
                setShowMessage(true);
+               setIsComplete(false);
                return;
             }
          }
       }
       setIsRunning(false);
       setElapsedTime(0);
+      setShowMessage(true);
+      setIsComplete(true);
    };
 
    const handleReset = () => {
       clearInterval(intervalId);
-      setGrid(generateFullGrid());
-      setElapsedTime(0);
+      setGrid(initialGrid);
+      setSolutionGrid(initialSolutionGrid);
       setIsRunning(false);
+      setElapsedTime(0);
       setShowMessage(false);
+      setIsComplete(false);
+      setIsRunning(true);
+      setIntervalId(
+         setInterval(() => {
+            setElapsedTime((prevTime) => prevTime + 1);
+         }, 1000)
+      );
    };
 
    const handleBlur = () => {
@@ -261,7 +349,9 @@ const Sudoku = () => {
             {showMessage && (
                <View style={styles.messageContainer}>
                   <Text style={styles.messageText}>
-                     Incorrect. Please try again!
+                     {isComplete
+                        ? "Congratulations! You solved the puzzle!"
+                        : "Incorrect. Please try again!"}
                   </Text>
                </View>
             )}
@@ -270,6 +360,7 @@ const Sudoku = () => {
    );
 };
 
+// StyleSheet
 const styles = StyleSheet.create({
    container: {
       flex: 1,
@@ -355,6 +446,9 @@ const styles = StyleSheet.create({
    messageText: {
       fontSize: 20,
       color: "red",
+   },
+   thickerBorder: {
+      borderWidth: 2,
    },
 });
 
