@@ -379,6 +379,9 @@ const styles = StyleSheet.create({
       color: "white",
       fontSize: 16,
    },
+   thickerBorder: {
+      borderWidth: 2,
+   },
 });
 
 export default Sudoku;
