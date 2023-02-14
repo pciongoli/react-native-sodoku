@@ -7,6 +7,7 @@ import {
    TextInput,
    TouchableWithoutFeedback,
    Keyboard,
+   Button,
 } from "react-native";
 
 const Cell = ({ value, onPress, isEditable }) => {
@@ -196,22 +197,30 @@ const validateInput = (row, col, value) => {
    return true;
 };
 
-const onCellPress = (row, col, value) => {
-   const newGrid = [...generateFullGrid()];
-   newGrid[row][col].value = value;
-   setGrid(newGrid);
-};
+// const onCellPress = (row, col, value) => {
+//    const newGrid = [...generateFullGrid()];
+//    newGrid[row][col].value = value;
+//    setGrid(newGrid);
+// };
 
 const SubmitButton = ({ onPress }) => (
    <TouchableOpacity onPress={onPress} style={styles.submitButton}>
       <Text style={styles.submitButtonText}>Submit</Text>
    </TouchableOpacity>
 );
+
+const ResetButton = ({ onPress }) => (
+   <TouchableOpacity onPress={onPress} style={styles.resetButton}>
+      <Text style={styles.resetButtonText}>Reset</Text>
+   </TouchableOpacity>
+);
+
 const Sudoku = () => {
    const [grid, setGrid] = useState(generateFullGrid());
    const [elapsedTime, setElapsedTime] = useState(0);
    const [isRunning, setIsRunning] = useState(true);
    const [intervalId, setIntervalId] = useState(null);
+   const [showMessage, setShowMessage] = useState(false);
 
    useEffect(() => {
       if (isRunning) {
@@ -226,8 +235,6 @@ const Sudoku = () => {
          clearInterval(intervalId);
       };
    }, [isRunning]);
-
-   const [showMessage, setShowMessage] = useState(false);
 
    const handleSubmit = () => {
       setIsRunning(true);
@@ -253,6 +260,15 @@ const Sudoku = () => {
       setIsRunning(false);
       setElapsedTime(0);
    };
+
+   const handleReset = () => {
+      clearInterval(intervalId);
+      setGrid(generateFullGrid());
+      setElapsedTime(0);
+      setIsRunning(false);
+      setShowMessage(false);
+   };
+
    const handleBlur = () => {
       Keyboard.dismiss();
    };
@@ -275,7 +291,10 @@ const Sudoku = () => {
                   setGrid(newGrid);
                }}
             />
-            <SubmitButton onPress={handleSubmit} />
+            <View style={styles.buttonContainer}>
+               <Button title="Submit" onPress={handleSubmit} />
+               <Button title="Reset" onPress={handleReset} />
+            </View>
             {showMessage && (
                <View style={styles.messageContainer}>
                   <Text style={styles.messageText}>
