@@ -10,13 +10,9 @@ import {
    Button,
 } from "react-native";
 
-<<<<<<< HEAD
-const Cell = ({ value, onPress, isEditable, rowIndex, cellIndex }) => {
-=======
 // `useState` hook to keep track of the value of the TextInput element
 // receives three props: `value`, `onPress`, and `isEditable`
 const Cell = ({ value, onPress, isEditable }) => {
->>>>>>> main
    const [inputValue, setInputValue] = useState(value ? value.toString() : "");
    return (
       <View
@@ -89,61 +85,6 @@ const shuffle = (arr) => {
 
 // Replaced hardcoded puzzle with backtracking algorithm to generate random, valid Sudoku grid
 const generateFullGrid = () => {
-<<<<<<< HEAD
-   return [
-      [
-         [
-            { value: 5, isEditable: false },
-            { value: 3, isEditable: false },
-            { value: 0, isEditable: true },
-         ],
-         [
-            { value: 0, isEditable: true },
-            { value: 7, isEditable: false },
-            { value: 0, isEditable: true },
-         ],
-         [
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-         ],
-      ],
-      [
-         [
-            { value: 6, isEditable: false },
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-         ],
-         [
-            { value: 1, isEditable: false },
-            { value: 9, isEditable: false },
-            { value: 5, isEditable: false },
-         ],
-         [
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-         ],
-      ],
-      [
-         [
-            { value: 0, isEditable: true },
-            { value: 9, isEditable: false },
-            { value: 8, isEditable: false },
-         ],
-         [
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-            { value: 0, isEditable: true },
-         ],
-         [
-            { value: 0, isEditable: true },
-            { value: 6, isEditable: false },
-            { value: 0, isEditable: true },
-         ],
-      ],
-   ];
-=======
    const grid = [];
    const solutionGrid = []; // added variable to store the solution grid
    for (let i = 0; i < 9; i++) {
@@ -207,7 +148,6 @@ const generateFullGrid = () => {
    solve();
    // console.log(solutionGrid); // console log the grid variable
    return [grid, solutionGrid]; //return both grids
->>>>>>> main
 };
 
 const validateInput = (row, col, value) => {
