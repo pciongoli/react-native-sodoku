@@ -9,6 +9,7 @@ import {
    Keyboard,
    Button,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 // `useState` hook to keep track of the value of the TextInput element
 // receives three props: `value`, `onPress`, and `isEditable`
@@ -255,7 +256,10 @@ const Sudoku = () => {
 
    return (
       <TouchableWithoutFeedback onPress={handleBlur}>
-         <View style={styles.container}>
+         <LinearGradient
+            colors={["#FFDAB9", "#00CED1"]}
+            style={styles.container}
+         >
             <View style={styles.titleAndTimerContainer}>
                <Text style={styles.titleText}>Sudoku</Text>
                <View style={styles.timerContainer}>
@@ -284,7 +288,7 @@ const Sudoku = () => {
                   </Text>
                </View>
             )}
-         </View>
+         </LinearGradient>
       </TouchableWithoutFeedback>
    );
 };
@@ -292,78 +296,79 @@ const Sudoku = () => {
 // StyleSheet
 const styles = StyleSheet.create({
    container: {
-      flex: 1,
-      backgroundColor: "white",
       alignItems: "center",
+      backgroundColor: "#FFDAB9",
+      flex: 1,
       justifyContent: "center",
    },
-   titleAndTimerContainer: {
-      width: "100%",
-      height: 50,
+   buttonContainer: {
       flexDirection: "row",
+      marginVertical: 10,
+   },
+   cell: {
       alignItems: "center",
+      borderWidth: 1,
+      height: 30,
       justifyContent: "center",
+      width: 30,
+   },
+   cellText: {
+      fontSize: 16,
+   },
+   grid: {
+      flexDirection: "column",
+      height: 300,
+      width: 300,
+   },
+   messageContainer: {
+      alignItems: "center",
+      backgroundColor: "blue",
+      height: 50,
+      justifyContent: "center",
+      marginTop: 20,
+      width: 100,
+   },
+   messageText: {
+      color: "white",
+      fontSize: 16,
+   },
+   submitButton: {
+      alignSelf: "center",
+      backgroundColor: "white",
+      marginTop: 10,
+      padding: 10,
+   },
+   submitButtonText: {
+      color: "white",
+      fontWeight: "bold",
+   },
+   thickerBorder: {
+      borderWidth: 2,
    },
    timerContainer: {
-      width: 100,
-      height: 50,
       alignItems: "center",
+      height: 50,
       justifyContent: "center",
       marginLeft: 10,
+      width: 100,
    },
    timerText: {
       fontSize: 18,
+   },
+   titleAndTimerContainer: {
+      alignItems: "center",
+      flexDirection: "row",
+      height: 50,
+      justifyContent: "center",
+      width: "100%",
    },
    titleText: {
       fontSize: 30,
       fontWeight: "bold",
       marginBottom: 20,
    },
-   grid: {
-      width: 300,
-      height: 300,
-      flexDirection: "column",
-   },
    row: {
       flexDirection: "row",
-   },
-   cell: {
-      borderWidth: 1,
-      width: 30,
-      height: 30,
-      alignItems: "center",
-      justifyContent: "center",
-   },
-   cellText: {
-      fontSize: 16,
-   },
-   submitButton: {
-      backgroundColor: "blue",
-      padding: 10,
-      marginTop: 10,
-      alignSelf: "center",
-   },
-   submitButtonText: {
-      color: "white",
-      fontWeight: "bold",
-   },
-   messageContainer: {
-      position: "absolute",
-      width: 100,
-      height: 50,
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 20,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "blue",
-   },
-   messageText: {
-      color: "white",
-      fontSize: 16,
-   },
-   thickerBorder: {
-      borderWidth: 2,
    },
 });
 
